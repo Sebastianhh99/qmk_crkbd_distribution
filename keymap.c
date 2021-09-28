@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-#include <stdio.h>
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
@@ -71,6 +70,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 #ifdef OLED_DRIVER_ENABLE
+#include <stdio.h>
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   if (!is_keyboard_master()) {
     return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
@@ -184,11 +185,9 @@ void oled_render_logo(void) {
 
 void oled_task_user(void) {
     if (is_keyboard_master()) {
-        //For animation
         oled_render_logo_main();
-        // For key presed
-        /*oled_render_layer_state();
-        oled_render_keylog();*/
+        //oled_render_layer_state();
+        //oled_render_keylog();
     } else {
         oled_render_logo();
     }
