@@ -160,7 +160,7 @@ void oled_render_logo_main(void){
 }
 
 void oled_render_logo(void) {
-    oled_write_raw_P(nyanStatic, sizeof(nyanStatic));
+    oled_write_raw_P(multigamesLogo, sizeof(multigamesLogo));
 }
 
 void oled_task_user(void) {
