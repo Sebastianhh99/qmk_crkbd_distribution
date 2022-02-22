@@ -71,6 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef OLED_DRIVER_ENABLE
 #include <stdio.h>
+#include <snoopy.h>
 #include <logos.h>
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
@@ -108,7 +109,7 @@ void oled_render_layer_state(void) {
 
 
 char keylog_str[24] = {};
-bool logochange = true;
+int logonumber = 1;
 
 const char code_to_name[60] = {
     ' ', ' ', ' ', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -152,10 +153,12 @@ void render_bootmagic_status(bool status) {
 }
 
 void oled_render_logo_main(void){
-    if(logochange){
-        oled_write_raw_P(bongoLeft,sizeof(bongoLeft));
+    if(logonumber == 1){
+        oled_write_raw_P(snoopy1,sizeof(snoopy1));
+    }else if(logonumber == 2){
+        oled_write_raw_P(snoopy2,sizeof(snoopy2));
     }else{
-        oled_write_raw_P(bongoRight,sizeof(bongoRight));
+        oled_write_raw_P(snoopy3,sizeof(snoopy3));
     }
 }
 
@@ -166,8 +169,6 @@ void oled_render_logo(void) {
 void oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_logo_main();
-        //oled_render_layer_state();
-        //oled_render_keylog();
     } else {
         oled_render_logo();
     }
@@ -176,7 +177,7 @@ void oled_task_user(void) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
     //set_keylog(keycode, record);
-    logochange=!logochange;
+    logonumber = (logonumber+1 == 4) ? 1:logonumber+1;
   }
   return true;
 }
