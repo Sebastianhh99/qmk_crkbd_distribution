@@ -153,12 +153,16 @@ void render_bootmagic_status(bool status) {
 }
 
 void oled_render_logo_main(void){
-    if(logonumber == 1){
-        oled_write_raw_P(snoopy1,sizeof(snoopy1));
-    }else if(logonumber == 2){
-        oled_write_raw_P(snoopy2,sizeof(snoopy2));
-    }else{
-        oled_write_raw_P(snoopy3,sizeof(snoopy3));
+    switch(logonumber){
+        case 1:
+            oled_write_raw_P(snoopy1,sizeof(snoopy1));
+            break;
+        case 2:
+            oled_write_raw_P(snoopy2,sizeof(snoopy2));
+            break;
+        default:
+            oled_write_raw_P(snoopy3,sizeof(snoopy3));
+            break;
     }
 }
 
@@ -177,7 +181,7 @@ void oled_task_user(void) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
     //set_keylog(keycode, record);
-    logonumber = (logonumber+1 == 4) ? 1:logonumber+1;
+    logonumber = (logonumber+1 > frames) ? 1:logonumber+1;
   }
   return true;
 }
