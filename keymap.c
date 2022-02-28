@@ -71,13 +71,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef OLED_DRIVER_ENABLE
 #include <stdio.h>
+#include <stdlib.h>
 #include <logos.h>
+#include <isaac.h>
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_master()) {
-    return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
-  }
-  return rotation;
+    return OLED_ROTATION_180;
 }
 
 #define L_BASE 0
@@ -108,7 +107,7 @@ void oled_render_layer_state(void) {
 
 
 char keylog_str[24] = {};
-bool logochange = true;
+int logoIndex = 0;
 
 const char code_to_name[60] = {
     ' ', ' ', ' ', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -152,10 +151,25 @@ void render_bootmagic_status(bool status) {
 }
 
 void oled_render_logo_main(void){
-    if(logochange){
-        oled_write_raw_P(bongoLeft,sizeof(bongoLeft));
-    }else{
-        oled_write_raw_P(bongoRight,sizeof(bongoRight));
+    switch(logoIndex){
+        case 0:
+            oled_write_raw_P(isaac,sizeof(isaac));
+            break;
+        case 1:
+            oled_write_raw_P(judas,sizeof(judas));
+            break;
+        case 2:
+            oled_write_raw_P(cain,sizeof(cain));
+            break;
+        case 3:
+            oled_write_raw_P(blueBaby,sizeof(blueBaby));
+            break;
+        case 4:
+            oled_write_raw_P(theLost,sizeof(theLost));
+            break;
+        default:
+            oled_write_raw_P(isaac,sizeof(isaac));
+            break;
     }
 }
 
@@ -166,8 +180,6 @@ void oled_render_logo(void) {
 void oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_logo_main();
-        //oled_render_layer_state();
-        //oled_render_keylog();
     } else {
         oled_render_logo();
     }
@@ -175,8 +187,7 @@ void oled_task_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
-    //set_keylog(keycode, record);
-    logochange=!logochange;
+    logoIndex = rand() % frames;
   }
   return true;
 }
